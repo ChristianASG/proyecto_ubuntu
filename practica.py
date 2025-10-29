@@ -182,7 +182,7 @@ idLabel=Label(miFrame, text="Id: ")
 idLabel.grid(row=0,column=0,sticky="e")
 nombreEntry=Entry(miFrame, textvariable=minombre)
 nombreEntry.grid(row=1,column=1,padx=10)
-nombreEntry.config(fg="red")
+nombreEntry.config(fg="red", justify="right")
 nombreLabel=Label(miFrame, text="Nombre: ")
 nombreLabel.grid(row=1,column=0,sticky="e")
 contraseñaEntry=Entry(miFrame)
@@ -205,7 +205,7 @@ comentarioLabel.grid(row=5,column=0,sticky="e")
 comentariotexto=Text(miFrame, width=30,height=7)
 comentariotexto.grid(row=5,column=1)
 barralateral=Scrollbar(miFrame, command=comentariotexto.yview)#barra lateral para subir y bajar por un texto largo
-barralateral.grid(row=4,column=2,sticky="nsew")
+barralateral.grid(row=5,column=2,sticky="nsew")
 comentariotexto.config(yscrollcommand=barralateral.set)
 #agregar boton, y agregar instrucciones
 def codigoBoton():
