@@ -5,6 +5,10 @@ import sqlite3
 
 root=Tk()
 
+
+#---------------------funciones--------------------
+
+
 def infoAdicional():
     messagebox.showinfo("Aplicacion para empaquetado","Aplicacion para empaquetado de Christian")
 
@@ -32,23 +36,32 @@ def abreFichero():
 def crearBase():
     conn = sqlite3.connect('app.db')
     cursor = conn.cursor()
-    cursor.execute('''CREATE TABLE IF NOT EXISTS registros (
+
+    try:
+
+        cursor.execute('''CREATE TABLE registros (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         Nombre TEXT,
                         Apellidos TEXT,
                         Contrasenya TEXT,
                         Direccion text,
                         Comentarios text)''')
-    conn.commit()
-    conn.close()
-    messagebox.showinfo("Base de datos", "Base de datos creada exitosamente.")
+        conn.commit()
+        conn.close()
+        messagebox.showinfo("Base de datos", "Base de datos creada exitosamente.")
+        
+    except:
+
+        messagebox.showwarning("Atencion!","La base de datos ya existe")
 
 def insertar_registro():
+    
+
     texto1 = nombreEntry.get()
     texto2 = apellidoEntry.get()
     texto3 = contraseñaEntry.get()
     texto4 = direccionEntry.get()
-    texto5 = comentariotexto.get()
+    texto5 = comentariotexto.get("1.0",END)
     
 
     if texto1 and texto2 and texto3 and texto4 :
@@ -121,7 +134,7 @@ def limpiar_campos():
     apellidoEntry.delete(0, END)
     contraseñaEntry.delete(0, END)
     direccionEntry.delete(0, END)
-    comentariotexto.delete(0, END)
+    comentariotexto.delete(1.0, END)
 
 
 #Button(root, text="Abrir fichero", command=abreFichero).pack()
@@ -169,14 +182,18 @@ barraMenu.add_cascade(label="Ayuda",menu=ayudaMenu)
 miFrame=Frame(root,width=500,height=400)
 miFrame.pack()
 
+miId=StringVar()
 minombre=StringVar()
+miapellido=StringVar()
+micontasenya=StringVar()
+midireccion=StringVar()
 
 
 
 #para utilizar imagenes tkinter usa png y gif, y tienes que especificar la ruta si no esta en el mismo directorio
 #miImagen=PhotoImage(file="imagenes-png.png")
 #miImagen.Label(miFrame, image=miImagen)
-idEntry=Entry(miFrame,)
+idEntry=Entry(miFrame, textvariable=miId)
 idEntry.grid(row=0,column=1,padx=10)
 idLabel=Label(miFrame, text="Id: ")
 idLabel.grid(row=0,column=0,sticky="e")
@@ -185,16 +202,16 @@ nombreEntry.grid(row=1,column=1,padx=10)
 nombreEntry.config(fg="red", justify="right")
 nombreLabel=Label(miFrame, text="Nombre: ")
 nombreLabel.grid(row=1,column=0,sticky="e")
-contraseñaEntry=Entry(miFrame)
+contraseñaEntry=Entry(miFrame, textvariable=micontasenya)
 contraseñaEntry.grid(row=3,column=1)
 contraseñaLabel=Label(miFrame, text="contraseña: ")
 contraseñaLabel.grid(row=3,column=0,sticky="e")
 contraseñaEntry.config(show="*")
-apellidoEntry=Entry(miFrame)
+apellidoEntry=Entry(miFrame, textvariable=miapellido)
 apellidoEntry.grid(row=2,column=1,padx=10)
 apellidoLabel=Label(miFrame, text="Apellido: ")
 apellidoLabel.grid(row=2,column=0,sticky="e")
-direccionEntry=Entry(miFrame)
+direccionEntry=Entry(miFrame, textvariable=midireccion)
 direccionEntry.grid(row=4,column=1)
 direccionLabel=Label(miFrame, text="Direccion: ")
 direccionLabel.grid(row=4,column=0,sticky="e")
