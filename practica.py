@@ -8,7 +8,6 @@ root=Tk()
 
 #---------------------funciones--------------------
 
-
 def infoAdicional():
     messagebox.showinfo("Aplicacion para empaquetado","Aplicacion para empaquetado de Christian")
 
