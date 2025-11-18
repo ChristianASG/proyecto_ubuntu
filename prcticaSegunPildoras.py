@@ -5,9 +5,6 @@ import sqlite3
 
 root=Tk()
 
-
-#---------------------funciones--------------------
-
 def infoAdicional():
     messagebox.showinfo("Aplicacion para empaquetado","Aplicacion para empaquetado de Christian")
 
@@ -35,43 +32,35 @@ def abreFichero():
 def crearBase():
     conn = sqlite3.connect('app.db')
     cursor = conn.cursor()
-
-    try:
-
-        cursor.execute('''CREATE TABLE registros (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        Nombre TEXT,
-                        Apellidos TEXT,
-                        Contrasenya TEXT,
-                        Direccion text,
-                        Comentarios text)''')
-        conn.commit()
-        conn.close()
-        messagebox.showinfo("Base de datos", "Base de datos creada exitosamente.")
-        
-    except:
-
-        messagebox.showwarning("Atencion!","La base de datos ya existe")
+    cursor.execute('''CREATE TABLE IF NOT EXISTS registros (
+                       id INTEGER PRIMARY KEY AUTOINCREMENT,
+                       Nombre TEXT,
+                       Apellidos TEXT,
+                       Contrasenya TEXT,
+                       Direccion text,
+                       Comentarios text)''')
+    conn.commit()
+    conn.close()
+    messagebox.showinfo("Base de datos", "Base de datos creada exitosamente.")
 
 def insertar_registro():
-    
-
     texto1 = nombreEntry.get()
     texto2 = apellidoEntry.get()
     texto3 = contraseñaEntry.get()
     texto4 = direccionEntry.get()
-    texto5 = comentariotexto.get("1.0",END)
-    
+    texto5 = comentariotexto.get("1.0","end-1c")
+
 
     if texto1 and texto2 and texto3 and texto4 :
         conn = sqlite3.connect('app.db')
         cursor = conn.cursor()
         cursor.execute('INSERT INTO registros (Nombre, Apellidos, Contrasenya, Direccion, Comentarios) VALUES (?, ?,?,?,?)',
-                       (texto1, texto2, texto3, texto4, texto5))
+        (texto1, texto2, texto3, texto4, texto5))
         conn.commit()
         conn.close()
         messagebox.showinfo("Insertar", "Registro insertado exitosamente.")
         limpiar_campos()
+
     else:
         messagebox.showwarning("Advertencia", "Por favor, complete todos los campos.")
 
@@ -80,8 +69,7 @@ def insertar_registro():
 def leerBase():
     conn = sqlite3.connect('app.db')
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM registros where id=miId.get()')
-
+    cursor.execute('SELECT * FROM registros')
     registros = cursor.fetchall()
     conn.close()
 
@@ -98,14 +86,14 @@ def actualizarBase():
     texto1 = nombreEntry.get()
     texto2 = apellidoEntry.get()
     texto3 = contraseñaEntry.get()
-    texto4 = direccionEntry.get("1.0","END")
-    texto5 = comentariotexto.get(1.0,END)
+    texto4 = direccionEntry.get()
+    texto5 = comentariotexto.get()
 
     if id_registro and texto1 and texto2 and texto3 and texto4 and texto5:
         conn = sqlite3.connect('app.db')
         cursor = conn.cursor()
         cursor.execute('UPDATE registros SET Nombre = ?, Apellidos = ?, Contrasenya = ?, Direccion = ? , Comentarios = ?  WHERE id = ?',
-                       (texto1, texto2, texto3, texto4, texto5, id_registro))
+        (texto1, texto2, texto3, texto4, texto5, id_registro))
         conn.commit()
         conn.close()
         messagebox.showinfo("Actualizar", "Registro actualizado exitosamente.")
@@ -116,9 +104,9 @@ def actualizarBase():
 
 
 def borrarBase():
-     id_registro = idEntry.get()
+    id_registro = idEntry.get()
 
-     if id_registro:
+    if id_registro:
         conn = sqlite3.connect('app.db')
         cursor = conn.cursor()
         cursor.execute('DELETE FROM registros WHERE id = ?', (id_registro,))
@@ -126,14 +114,15 @@ def borrarBase():
         conn.close()
         messagebox.showinfo("Borrar", "Registro borrado exitosamente.")
         limpiar_campos()
-     else:
+    else:
         messagebox.showwarning("Advertencia", "Por favor, ingrese un ID para borrar.")
 
 def limpiar_campos():
-    nombreEntry.delete(0, END)
-    apellidoEntry.delete(0, END)
-    contraseñaEntry.delete(0, END)
-    direccionEntry.delete(0, END)
+    miId.set("")
+    miNombre.set("")
+    miApellido.set("")
+    miContrasenya.set("")
+    miDireccion.set("")
     comentariotexto.delete(1.0, END)
 
 
@@ -183,35 +172,36 @@ miFrame=Frame(root,width=500,height=400)
 miFrame.pack()
 
 miId=StringVar()
-minombre=StringVar()
-miapellido=StringVar()
-micontasenya=StringVar()
-midireccion=StringVar()
+miNombre=StringVar()
+miApellido=StringVar()
+miContrasenya=StringVar()
+miDireccion=StringVar()
 
 
 
 #para utilizar imagenes tkinter usa png y gif, y tienes que especificar la ruta si no esta en el mismo directorio
 #miImagen=PhotoImage(file="imagenes-png.png")
 #miImagen.Label(miFrame, image=miImagen)
-idEntry=Entry(miFrame, textvariable=miId)
+idEntry=Entry(miFrame,textvariable=miId)
 idEntry.grid(row=0,column=1,padx=10)
 idLabel=Label(miFrame, text="Id: ")
 idLabel.grid(row=0,column=0,sticky="e")
-nombreEntry=Entry(miFrame, textvariable=minombre)
+nombreEntry=Entry(miFrame, textvariable=miNombre)
 nombreEntry.grid(row=1,column=1,padx=10)
+nombreEntry.config(fg="red")
 nombreEntry.config(fg="red", justify="right")
 nombreLabel=Label(miFrame, text="Nombre: ")
 nombreLabel.grid(row=1,column=0,sticky="e")
-contraseñaEntry=Entry(miFrame, textvariable=micontasenya)
+contraseñaEntry=Entry(miFrame,textvariable=miContrasenya)
 contraseñaEntry.grid(row=3,column=1)
 contraseñaLabel=Label(miFrame, text="contraseña: ")
 contraseñaLabel.grid(row=3,column=0,sticky="e")
 contraseñaEntry.config(show="*")
-apellidoEntry=Entry(miFrame, textvariable=miapellido)
+apellidoEntry=Entry(miFrame,textvariable=miApellido)
 apellidoEntry.grid(row=2,column=1,padx=10)
 apellidoLabel=Label(miFrame, text="Apellido: ")
 apellidoLabel.grid(row=2,column=0,sticky="e")
-direccionEntry=Entry(miFrame, textvariable=midireccion)
+direccionEntry=Entry(miFrame,textvariable=miDireccion)
 direccionEntry.grid(row=4,column=1)
 direccionLabel=Label(miFrame, text="Direccion: ")
 direccionLabel.grid(row=4,column=0,sticky="e")
@@ -222,6 +212,7 @@ comentarioLabel.grid(row=5,column=0,sticky="e")
 comentariotexto=Text(miFrame, width=30,height=7)
 comentariotexto.grid(row=5,column=1)
 barralateral=Scrollbar(miFrame, command=comentariotexto.yview)#barra lateral para subir y bajar por un texto largo
+barralateral.grid(row=4,column=2,sticky="nsew")
 barralateral.grid(row=5,column=2,sticky="nsew")
 comentariotexto.config(yscrollcommand=barralateral.set)
 #agregar boton, y agregar instrucciones
@@ -246,12 +237,6 @@ botonEliminar.grid(row=0,column=3,sticky="e")
 
 botonLimpiar=Button(miFrame1, text="Limpiar",command=limpiar_campos)
 botonLimpiar.grid(row=0,column=4,sticky="e")
-
-
-
-
-
-
 
 
 root.mainloop()
