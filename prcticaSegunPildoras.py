@@ -32,75 +32,67 @@ def abreFichero():
 def crearBase():
     conn = sqlite3.connect('app.db')
     cursor = conn.cursor()
-    cursor.execute('''CREATE TABLE IF NOT EXISTS registros (
+
+    try:
+        cursor.execute('''CREATE TABLE registros (
                        id INTEGER PRIMARY KEY AUTOINCREMENT,
-                       Nombre TEXT,
-                       Apellidos TEXT,
-                       Contrasenya TEXT,
-                       Direccion text,
-                       Comentarios text)''')
-    conn.commit()
-    conn.close()
-    messagebox.showinfo("Base de datos", "Base de datos creada exitosamente.")
+                       Nombre VARCHAR(50),
+                       Apellidos VARCHAR(50),
+                       Contrasenya VARCHAR(10),
+                       Direccion VARCHAR(50),
+                       Comentarios VARCHAR(100))''')
+        messagebox.showinfo("Base de datos", "Base de datos creada exitosamente.")
+    except:
+         messagebox.showwarning("Base de datos", "Base de datos ya existente.")
 
+   
+   
 def insertar_registro():
-    texto1 = nombreEntry.get()
-    texto2 = apellidoEntry.get()
-    texto3 = contraseñaEntry.get()
-    texto4 = direccionEntry.get()
-    texto5 = comentariotexto.get("1.0","end-1c")
+    conn = sqlite3.connect('app.db')
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO registros VALUES(NULL, '"+miNombre.get() +
+                   "','"+miApellido.get()+
+                   "','"+miContrasenya.get()+
+                   "','"+miDireccion.get()+
+                   "','"+comentariotexto.get("1.0",END)+"')")
+    conn.commit()
+    messagebox.showinfo("BBDD","Registro insertado con exito")
 
 
-    if texto1 and texto2 and texto3 and texto4 :
-        conn = sqlite3.connect('app.db')
-        cursor = conn.cursor()
-        cursor.execute('INSERT INTO registros (Nombre, Apellidos, Contrasenya, Direccion, Comentarios) VALUES (?, ?,?,?,?)',
-        (texto1, texto2, texto3, texto4, texto5))
-        conn.commit()
-        conn.close()
-        messagebox.showinfo("Insertar", "Registro insertado exitosamente.")
-        limpiar_campos()
-
-    else:
-        messagebox.showwarning("Advertencia", "Por favor, complete todos los campos.")
-
+   
 
 
 def leerBase():
     conn = sqlite3.connect('app.db')
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM registros')
+    cursor.execute("SELECT * FROM registros WHERE id="+miId.get())
     registros = cursor.fetchall()
-    conn.close()
-
-    if registros:
-        resultado = "\n".join([f"ID: {reg[0]} - {reg[1]}, {reg[2]}, {reg[3]}, {reg[4]}, {reg[5]}" for reg in registros])
-        messagebox.showinfo("Registros", resultado)
-    else:
-        messagebox.showinfo("Registros", "No hay registros en la base de datos.")
-
+    for usuario in registros:
+        miId.set(usuario[0])
+        miNombre.set(usuario[1])
+        miApellido.set(usuario[2])
+        miContrasenya.set(usuario[3])
+        miDireccion.set(usuario[4])
+        comentariotexto.insert(1.0,usuario[5])
 
 
 def actualizarBase():
-    id_registro = idEntry.get()
-    texto1 = nombreEntry.get()
-    texto2 = apellidoEntry.get()
-    texto3 = contraseñaEntry.get()
-    texto4 = direccionEntry.get()
-    texto5 = comentariotexto.get()
+    conn = sqlite3.connect('app.db')
+    cursor = conn.cursor()
+    cursor.execute("UPDATE registros SET Nombre= '"+miNombre.get() +
+                   "',Apellidos='"+miApellido.get()+
+                   "',Contrasenya='"+miContrasenya.get()+
+                   "',Direccion='"+miDireccion.get()+
+                   "',Comentarios='"+comentariotexto.get("1.0",END)+
+                   "' WHERE id="+miId.get())
+    conn.commit()
+    messagebox.showinfo("BBDD","Registro actualizado con exito")
 
-    if id_registro and texto1 and texto2 and texto3 and texto4 and texto5:
-        conn = sqlite3.connect('app.db')
-        cursor = conn.cursor()
-        cursor.execute('UPDATE registros SET Nombre = ?, Apellidos = ?, Contrasenya = ?, Direccion = ? , Comentarios = ?  WHERE id = ?',
-        (texto1, texto2, texto3, texto4, texto5, id_registro))
-        conn.commit()
-        conn.close()
-        messagebox.showinfo("Actualizar", "Registro actualizado exitosamente.")
-        limpiar_campos()
-    else:
-        messagebox.showwarning("Advertencia", "Por favor, complete todos los campos.")
 
+
+    
+   
+   
 
 
 def borrarBase():
@@ -215,9 +207,7 @@ barralateral=Scrollbar(miFrame, command=comentariotexto.yview)#barra lateral par
 barralateral.grid(row=4,column=2,sticky="nsew")
 barralateral.grid(row=5,column=2,sticky="nsew")
 comentariotexto.config(yscrollcommand=barralateral.set)
-#agregar boton, y agregar instrucciones
-def codigoBoton():
-    minombre.set("Christian")
+
 #para obtener informacion(get)
 
 miFrame1=Frame(root)
