@@ -96,19 +96,14 @@ def actualizarBase():
 
 
 def borrarBase():
-    id_registro = idEntry.get()
-
-    if id_registro:
-        conn = sqlite3.connect('app.db')
-        cursor = conn.cursor()
-        cursor.execute('DELETE FROM registros WHERE id = ?', (id_registro,))
-        conn.commit()
-        conn.close()
-        messagebox.showinfo("Borrar", "Registro borrado exitosamente.")
-        limpiar_campos()
-    else:
-        messagebox.showwarning("Advertencia", "Por favor, ingrese un ID para borrar.")
-
+  
+    conn = sqlite3.connect('app.db')
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM registros WHERE id ='+miId.get())
+    conn.commit()
+        
+    messagebox.showinfo("Borrar", "Registro borrado exitosamente.")
+    
 def limpiar_campos():
     miId.set("")
     miNombre.set("")
