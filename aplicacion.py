@@ -15,25 +15,19 @@ def crear_base_datos():
     conn.close()
     messagebox.showinfo("Base de datos", "Base de datos creada exitosamente.")
 
-# Función para insertar un registro en la base de datos
+# Función para insertar un registro en la base de datos mediante consulta parametrizada
 def insertar_registro():
-    texto1 = entry_texto1.get()
-    texto2 = entry_texto2.get()
-    texto3 = entry_texto3.get()
+    conn = sqlite3.connect('app.db')
+    cursor = conn.cursor()
+    datos = entry_texto1.get(),entry_texto2.get(),entry_texto3.get()
     
-
-    if texto1 and texto2 and texto3 :
-        conn = sqlite3.connect('app.db')
-        cursor = conn.cursor()
-        cursor.execute('INSERT INTO registros (texto1, texto2, texto3) VALUES (?, ?,?)',
-                       (texto1, texto2, texto3))
-        conn.commit()
-        conn.close()
-        messagebox.showinfo("Insertar", "Registro insertado exitosamente.")
-        limpiar_campos()
-    else:
-        messagebox.showwarning("Advertencia", "Por favor, complete todos los campos.")
-
+  
+    cursor.execute("INSERT INTO registros VALUES (NULL,?,?,?)",(datos))
+                       
+    conn.commit()
+       
+    messagebox.showinfo("Insertar", "Registro insertado exitosamente.")
+    
 # Función para leer todos los registros de la base de datos
 def leer_registros():
     conn = sqlite3.connect('app.db')
